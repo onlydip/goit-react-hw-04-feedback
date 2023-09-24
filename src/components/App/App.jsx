@@ -1,47 +1,48 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import Section from "components/Section";
 import Statistic from "components/Statistic";
 import Feedback from "components/Feedback";
 import Notification from "components/Notification";
 import { AppSection } from './App.styled';
 
-export default class App extends Component {
-  state = {
+export default function App() {
+  const [feedback, setFeedback] = useState(
+   {
     good: 0,
     neutral: 0,
     bad: 0
-  };
+  });
 
-  options = ['good', 'neutral', 'bad']; 
+  const options = ['good', 'neutral', 'bad']; 
 
-  handleFeedback = (t) => {
-    if (this.options.includes(t)) { 
-      this.setState((prevState) => ({
-        [t]: prevState[t] + 1,
+  const handleFeedback = (t) => {
+    if (options.includes(t)) { 
+      setFeedback((prevFeedback) => ({
+        ...prevFeedback,[t]: prevFeedback[t] + 1,
       }));
     }
   };
 
-  countTotalFeedback = () => {
-    const { good, neutral, bad } = this.state;
+  const countTotalFeedback = () => {
+    const { good, neutral, bad } = feedback;
     return good + neutral + bad;
   };
 
-  countPositiveFeedbackPercentage = () => {
-    const total = this.countTotalFeedback();
-    const { good } = this.state;
+  const countPositiveFeedbackPercentage = () => {
+    const total = countTotalFeedback();
+    const { good } = feedback;
     return total > 0 ? Math.round((good / total) * 100) : 0;
   };
 
-  render() {
-    const { good, neutral, bad } = this.state;
-    const total = this.countTotalFeedback();
-    const positivePercentage = this.countPositiveFeedbackPercentage();
+
+    const { good, neutral, bad } = feedback;
+    const total = countTotalFeedback();
+    const positivePercentage = countPositiveFeedbackPercentage();
 
     return (
       <AppSection>
         <Section title="Please, leave a review about Expresso Cafe">
-          <Feedback onLeaveFeedback={this.handleFeedback} options={this.options} />
+          <Feedback onLeaveFeedback={handleFeedback} options={options} />
         </Section>
 
         <Section title="Statistics">
@@ -60,4 +61,4 @@ export default class App extends Component {
       </AppSection>
     );
   }
-}
+
